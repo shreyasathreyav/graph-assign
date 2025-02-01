@@ -14,6 +14,9 @@ void solution()
     Graph* g = new Graph();
     // g->minimum_path();ss
 
+
+    delete g;
+    g = nullptr;
     cout << endl;
 }
 

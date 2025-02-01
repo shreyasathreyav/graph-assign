@@ -15,10 +15,10 @@ class Node{
         this->id = id;
     }
     int id;
-    set<Node*> connected_nodes;
+    vector<Node*> connected_nodes;
     void addNode(Node* n)
     {
-        connected_nodes.insert(n);
+        connected_nodes.push_back(n);
     }
 };
 
@@ -219,6 +219,21 @@ class Graph{
             cout << endl;
         }
         cout << endl;
+    }
+
+    ~Graph()
+    {
+        for(int i = 0; i < edgeList.size(); i++)
+        {
+            delete edgeList[i];
+            edgeList[i] = nullptr;
+        }
+
+        for(int i =0; i < vertices.size(); i++)
+        {
+            delete vertices[i];
+            vertices[i] = nullptr;
+        }
     }
 
     vector<Edge*> minimum_path()
