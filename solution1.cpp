@@ -13,7 +13,11 @@ void solution()
 {
     Graph* g = new Graph();
     // g->minimum_path();ss
+    g->path_finder();
 
+    g->print_all_paths();
+    g->shortest_paths();
+    g->print_shortest_paths();
 
     delete g;
     g = nullptr;

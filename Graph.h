@@ -1,7 +1,9 @@
 #pragma once
 #include<vector>
+#include<queue>
 #include<iostream>
 #include<set>
+#include<algorithm>
 // #define DEBUG
 
 using namespace std;
@@ -48,6 +50,8 @@ class Graph{
     vector<Node*> vertices;
     vector<Node*> final_vertices;
     vector<Edge*> edgeList;
+    vector<vector<Edge*>> path_to_final_vertices;
+    vector<vector<Edge*>> minimum_paths;
 
     Graph()
     {
@@ -221,6 +225,130 @@ class Graph{
         cout << endl;
     }
 
+    void print_all_paths() 
+    {
+
+        cout << "Paths found:" << endl;
+
+        int path_number = 1;
+        for (auto path : path_to_final_vertices) 
+        {
+            cout << "Path " << path_number++ << ": ";
+            for (auto edge : path) 
+            {
+                cout << edge->lable << " ";
+            }
+            cout << endl;
+        }
+    }
+
+    void print_shortest_paths() 
+    {
+        cout << "Shortest path:" << endl;
+
+        int path_number = 1;
+        for (auto path : minimum_paths) 
+        {
+            cout << "Path " << path_number++ << ": ";
+            for (auto edge : path) 
+            {
+                cout << edge->lable << " ";
+            }
+            cout << endl;
+        }
+    }
+
+
+    bool is_final_vertex(Node* node) 
+    {
+        for (auto i : final_vertices) 
+        {
+            if (i->id == node->id) 
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool is_connected(Edge* edge, Node* node1, Node* node2) 
+    {
+        return (edge->n1 == node1 && edge->n2 == node2) || (edge->n2 == node1 && edge->n1 == node2);
+    }
+
+
+
+    void path_finder() 
+    {
+        path_to_final_vertices.clear(); 
+
+        queue<pair<Node*, vector<Edge*>>> q;
+        q.push({initial_vertex, {}}); 
+
+        while (!q.empty()) 
+        {
+            auto current_pair = q.front();
+            Node* current_node = current_pair.first;
+            vector<Edge*> path_so_far = current_pair.second;
+            q.pop();
+
+            if (is_final_vertex(current_node)) 
+            {
+                path_to_final_vertices.push_back(path_so_far);
+            }
+
+            set<int> visited_in_path;
+            for (auto edge : path_so_far) 
+            {
+                visited_in_path.insert(edge->n1->id);
+                visited_in_path.insert(edge->n2->id);
+            }
+
+            for (auto neighbor : current_node->connected_nodes) 
+            {
+                if (!visited_in_path.count(neighbor->id) || is_final_vertex(neighbor)) 
+                {
+                    for (auto edge : edgeList) 
+                    {
+                        if (is_connected(edge, current_node, neighbor)) 
+                        {
+                            vector<Edge*> new_path = path_so_far;
+                            new_path.push_back(edge);
+                            q.push({neighbor, new_path});
+                            break;  
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void shortest_paths() 
+    {
+        minimum_paths.clear();  
+
+        int shortest_size = path_to_final_vertices[0].size();
+
+        minimum_paths.push_back(path_to_final_vertices[0]); 
+
+        for (size_t i = 1; i < path_to_final_vertices.size(); ++i) 
+        {
+            int current_path_size = path_to_final_vertices[i].size();
+
+            if (current_path_size < shortest_size) 
+            {
+                shortest_size = current_path_size;
+                minimum_paths.clear();
+                minimum_paths.push_back(path_to_final_vertices[i]);
+            } 
+            else if (current_path_size == shortest_size) 
+            {
+                minimum_paths.push_back(path_to_final_vertices[i]);
+            }
+        }
+    }
+
+
     ~Graph()
     {
         for(int i = 0; i < edgeList.size(); i++)
@@ -235,12 +363,6 @@ class Graph{
             vertices[i] = nullptr;
         }
     }
-
-    vector<Edge*> minimum_path()
-    {
-        
-    }
-
 
 };
 
