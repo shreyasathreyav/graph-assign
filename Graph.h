@@ -258,6 +258,32 @@ class Graph{
         }
     }
 
+    void printQueue(queue<pair<Node*, vector<Edge*>>> q) 
+    {
+        cout << "Queue State:" << endl;
+        if (q.empty()) 
+        {
+            cout << "[Queue is Empty]" << endl;
+            return;
+        }
+
+        while (!q.empty()) 
+        {
+            auto current_pair = q.front();
+            Node* current_node = current_pair.first;
+            vector<Edge*> path_so_far = current_pair.second;
+
+            cout << "Node ID: " << current_node->id << " | Path Labels: ";
+            for (auto edge : path_so_far) 
+            {
+                cout << edge->lable << " ";
+            }
+            cout << endl;
+
+            q.pop();
+        }
+    }
+
 
     bool is_final_vertex(Node* node) 
     {
@@ -276,8 +302,6 @@ class Graph{
         return (edge->n1 == node1 && edge->n2 == node2) || (edge->n2 == node1 && edge->n1 == node2);
     }
 
-
-
     void path_finder() 
     {
         path_to_final_vertices.clear(); 
@@ -287,6 +311,10 @@ class Graph{
 
         while (!q.empty()) 
         {
+#ifdef DEBUG
+            cout << "Before " <<endl;
+            printQueue(q);
+#endif
             auto current_pair = q.front();
             Node* current_node = current_pair.first;
             vector<Edge*> path_so_far = current_pair.second;
@@ -320,6 +348,10 @@ class Graph{
                     }
                 }
             }
+#ifdef DEBUG
+            cout << "After " <<endl;
+            printQueue(q);
+#endif
         }
     }
 
@@ -347,7 +379,6 @@ class Graph{
             }
         }
     }
-
 
     ~Graph()
     {
