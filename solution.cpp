@@ -12,7 +12,7 @@ using namespace std;
 void solution2a()
 {
     int numGraphs; cin >> numGraphs;
-    cout << "Number of Graphs: "<< numGraphs <<endl; 
+    // cout << "Number of Graphs: "<< numGraphs <<endl; 
     vector<Graph*> graphList;
     while(numGraphs--)
     {
@@ -41,6 +41,9 @@ void solution2a()
 
     vector<string> intersection_paths =  findIntersection(all_paths);
 
+    // cout << "Size of the intersection set "<< intersection_paths.size() << endl;
+    // for(auto i: intersection_paths) cout << i << " ";
+    // cout << endl;
 
     string smallest_string = intersection_paths[0];
     // cout << smallest_string <<endl;
@@ -53,6 +56,34 @@ void solution2a()
     }
 
     cout << "Shortest Path :" << smallest_string << endl;
+}
+
+void solution2b()
+{
+    int numGraphs; cin >> numGraphs;
+    // cout << "Number of Graphs: "<< numGraphs <<endl; 
+    vector<Graph*> graphList;
+    while(numGraphs--)
+    {
+        Graph* g = new Graph();
+        g->path_finder();
+        g->shortest_paths();
+        graphList.push_back(g);
+    }
+
+    Graph* intersection_Graph = constructIntersectionGraph(graphList);
+
+    intersection_Graph->path_finder();
+    
+    intersection_Graph->shortest_paths();
+
+    intersection_Graph->print_shortest_paths();
+
+    // cout << endl << "Common Labels are : ";
+    // for(auto i: commonLables)
+    // cout << i.first <<" ";
+
+    // cout <<endl;
 }
 
 
@@ -84,12 +115,13 @@ int main()
     int testcases;
     cin >> testcases;
 
-    cout << "Testcases : " << testcases <<endl;
+    // cout << "Testcases : " << testcases <<endl;
     
     while(testcases--)
     {
         // solution1();
-        solution2a();
+        // solution2a();
+        solution2b();
     }
 }
 

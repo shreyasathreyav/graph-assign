@@ -123,6 +123,58 @@ class Graph{
 #endif
     }
     
+    Graph(int numVertices, int numEdges, vector<tuple<int, int, char>> edges_with_labels, int source_node, vector<int> final_vertices_ids)
+    {
+        setNumberofVertices(numVertices);
+        setNumberofEdges(numEdges);
+
+        for (auto& edge_info : edges_with_labels)
+        {
+            int n1_id = get<0>(edge_info);
+            int n2_id = get<1>(edge_info);
+            char label = get<2>(edge_info);
+
+            Node* n1 = nullptr;
+            Node* n2 = nullptr;
+
+            for (auto node : vertices)
+            {
+                if (node->id == n1_id)
+                {
+                    n1 = node;
+                }
+                if (node->id == n2_id)
+                {
+                    n2 = node;
+                }
+            }
+
+            if (n1 == nullptr)
+            {
+                n1 = new Node(n1_id);
+                addVertex(n1);
+            }
+            if (n2 == nullptr)
+            {
+                n2 = new Node(n2_id);
+                addVertex(n2);
+            }
+
+            Edge* e = new Edge(n1, n2);
+            setLabel(label, e);
+            addedges(e);
+            n1->addNode(n2);
+            n2->addNode(n1);
+        }
+
+        setInitialVertex(source_node);
+        setnumFinalVertices(final_vertices_ids.size());
+        for (int id : final_vertices_ids)
+        {
+            addFinalVertices(id);   
+        }
+    }
+
     void setNumberofEdges(int e)
     {
         numberOfEdges = e;
