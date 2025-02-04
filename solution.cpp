@@ -109,19 +109,26 @@ void solution1()
 int main()
 {
 
-    // freopen("input.txt", "r", stdin);
-    freopen("input1.txt", "r", stdin);
+    // freopen("input.txt", "r", stdin); // to run question 1
+    freopen("input1.txt", "r", stdin); // to run question 2
     
+    int question; cin >> question;
+
     int testcases;
     cin >> testcases;
 
-    // cout << "Testcases : " << testcases <<endl;
     
     while(testcases--)
     {
-        // solution1();
-        // solution2a();
-        solution2b();
+        if(question == 1)
+        {
+            solution1();
+        }
+        else
+        {
+            solution2a();
+            solution2b();
+        }
     }
 }
 

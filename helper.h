@@ -93,6 +93,12 @@ unordered_map<char, pair<int, int>> createCommonLabelMap(vector<Graph *> graphLi
         }
     }
 
+    // for(auto label : common_labels)
+    // {
+    //     cout << label << " ";
+    // }
+    // cout << endl;
+
     unordered_map<char, pair<int, int>> label_to_nodes;
     for (auto edge : graphList[0]->edgeList)
     {
@@ -102,10 +108,15 @@ unordered_map<char, pair<int, int>> createCommonLabelMap(vector<Graph *> graphLi
         }
     }
 
+    // for(auto item : label_to_nodes)
+    // {
+    //     cout << item.first << ": (" << item.second.first << ", " << item.second.second << ") ";
+    // }
+    // cout << endl;
     return label_to_nodes;
 }
 
-Graph* constructIntersectionGraph(vector<Graph*> graphList)
+Graph *constructIntersectionGraph(vector<Graph *> graphList)
 {
     unordered_map<char, pair<int, int>> label_to_nodes = createCommonLabelMap(graphList);
     set<int> unique_nodes;
@@ -133,7 +144,7 @@ Graph* constructIntersectionGraph(vector<Graph*> graphList)
         final_vertices_ids.push_back(v->id);
     }
 
-    Graph* newGraph = new Graph(number_of_vertices, number_of_edges, edges_with_labels, source_node, final_vertices_ids);
+    Graph *newGraph = new Graph(number_of_vertices, number_of_edges, edges_with_labels, source_node, final_vertices_ids);
 
     return newGraph;
 }
