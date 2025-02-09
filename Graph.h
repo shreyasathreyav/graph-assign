@@ -53,7 +53,7 @@ class Graph{
 
     int numberOfVertices;
     int numberOfEdges;
-    int numFinalV;
+    int numFinalVertices;
     Node* initial_vertex;
     vector<Node*> vertices;
     vector<Node*> final_vertices;
@@ -108,7 +108,6 @@ class Graph{
             n2->addNode(n1);
 
             addedges(e);
-            // setLabel(label, e);
         }
 
         int initial_node; cin >> initial_node; 
@@ -137,7 +136,7 @@ class Graph{
         setNumberofVertices(numVertices);
         setNumberofEdges(numEdges);
 
-        for (auto& edge_info : edges_with_labels)
+        for (auto edge_info : edges_with_labels)
         {
             int n1_id = get<0>(edge_info);
             int n2_id = get<1>(edge_info);
@@ -170,7 +169,6 @@ class Graph{
             }
 
             Edge* e = new Edge(n1, n2, label);
-            // setLabel(label, e);
             addedges(e);
             n1->addNode(n2);
             n2->addNode(n1);
@@ -184,8 +182,9 @@ class Graph{
         }
     }
 
-    Graph(Node *initial_node, vector<Edge *> edges)
+    Graph(Node *initial_node, vector<Node*> final_vertices ,vector<Edge *> edges)
     {
+        this->final_vertices = final_vertices;
         initial_vertex = initial_node;
         edgeList = edges;
     
@@ -198,11 +197,11 @@ class Graph{
     
         for (auto node : unique_nodes)
         {
-            vertices.push_back(node);
+            addVertex(node);
         }
     
-        numberOfVertices = vertices.size();
-        numberOfEdges = edges.size();
+        setNumberofVertices(vertices.size());
+        setNumberofEdges(edges.size());
     
         for (auto node : vertices)
         {
@@ -211,6 +210,8 @@ class Graph{
                 final_vertices.push_back(node);
             }
         }
+        setnumFinalVertices(final_vertices.size());
+
     }
 
 
@@ -224,7 +225,7 @@ class Graph{
     }
     void setnumFinalVertices(int num)
     {
-        this->numFinalV = num;
+        this->numFinalVertices = num;
     }
     void setLabel(char c, Edge* e)
     {
@@ -395,11 +396,9 @@ class Graph{
 
     void path_finder() 
     {
-        path_to_final_vertices.clear(); 
-
         queue<pair<Node*, vector<Edge*>>> q;
+        
         q.push({initial_vertex, {}}); 
-
         while (!q.empty()) 
         {
 #ifdef DEBUG
@@ -448,10 +447,7 @@ class Graph{
 
     void shortest_paths() 
     {
-        minimum_paths.clear();  
-
         int shortest_size = path_to_final_vertices[0].size();
-
         minimum_paths.push_back(path_to_final_vertices[0]); 
 
         for (size_t i = 1; i < path_to_final_vertices.size(); ++i) 

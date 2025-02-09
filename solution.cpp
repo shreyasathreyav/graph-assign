@@ -114,32 +114,35 @@ void solution2a()
 
 
 void solution2c()
-{
+{    
     int numGraphs; cin >> numGraphs;
     // cout << "Number of Graphs: "<< numGraphs <<endl; 
+    
     vector<Graph*> graphList;
+    
     while(numGraphs--)
     {
         Graph* g = new Graph();
-        g->path_finder();
-        g->shortest_paths();
+        // g->path_finder();
+        // g->shortest_paths();
         graphList.push_back(g);
     }
 
     Graph* intersection_Graph = createIntersectionGraph(graphList);
+    
 
-    // if(intersection_Graph != nullptr)
-    // {   
-    //     intersection_Graph->path_finder();
+    if(intersection_Graph != nullptr)
+    {   
+        intersection_Graph->path_finder();
         
-    //     intersection_Graph->shortest_paths();
+        intersection_Graph->shortest_paths();
         
-    //     intersection_Graph->print_shortest_paths();
-    // }
-    // else
-    // {
-    //     cout << "No possible path in graph " <<endl; 
-    // }
+        intersection_Graph->print_shortest_paths();
+    }
+    else
+    {
+        cout << "No possible path in graph " <<endl; 
+    }
 }
 
 
@@ -168,19 +171,24 @@ int main()
     freopen("input1.txt", "r", stdin); // to run question 2
     
     int question; cin >> question;
-
+    // cout << "Question " << question <<endl;
     int testcases;
     cin >> testcases;
+    // cout << "Testcases " << testcases <<endl;
 
     
     while(testcases--)
     {
         if(question == 1)
         {
+            // cout << "################" <<endl;
+            // cout << "Solving Question 1" <<endl;
             solution1();
         }
         else
         {
+            // cout << "################" <<endl;
+            // cout << "Solving Question 2" <<endl;
             // solution2a();
             // solution2b();
             solution2c();

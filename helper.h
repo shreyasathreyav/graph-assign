@@ -38,7 +38,7 @@ vector<string> findIntersection(vector<set<string>> all_paths)
     for (size_t i = 1; i < all_paths.size(); ++i)
     {
         set<string> temp;
-        for (const auto &item : common_items)
+        for (auto item : common_items)
         {
             if (all_paths[i].count(item))
             {
@@ -116,38 +116,38 @@ unordered_map<char, pair<int, int>> createCommonLabelMap(vector<Graph *> graphLi
     return label_to_nodes;
 }
 
-// Graph *constructIntersectionGraph(vector<Graph *> graphList)
-// {
-//     unordered_map<char, pair<int, int>> label_to_nodes = createCommonLabelMap(graphList);
-//     set<int> unique_nodes;
-//     vector<tuple<int, int, char>> edges_with_labels;
+Graph *constructIntersectionGraph(vector<Graph *> graphList)
+{
+    unordered_map<char, pair<int, int>> label_to_nodes = createCommonLabelMap(graphList);
+    set<int> unique_nodes;
+    vector<tuple<int, int, char>> edges_with_labels;
 
-//     for (auto item : label_to_nodes)
-//     {
-//         char label = item.first;
-//         int node1 = item.second.first;
-//         int node2 = item.second.second;
+    for (auto item : label_to_nodes)
+    {
+        char label = item.first;
+        int node1 = item.second.first;
+        int node2 = item.second.second;
 
-//         unique_nodes.insert(node1);
-//         unique_nodes.insert(node2);
+        unique_nodes.insert(node1);
+        unique_nodes.insert(node2);
 
-//         edges_with_labels.push_back({node1, node2, label});
-//     }
+        edges_with_labels.push_back({node1, node2, label});
+    }
 
-//     int number_of_vertices = unique_nodes.size();
-//     int number_of_edges = edges_with_labels.size();
+    int number_of_vertices = unique_nodes.size();
+    int number_of_edges = edges_with_labels.size();
 
-//     int source_node = graphList[0]->initial_vertex->id;
-//     vector<int> final_vertices_ids;
-//     for (auto v : graphList[0]->final_vertices)
-//     {
-//         final_vertices_ids.push_back(v->id);
-//     }
+    int source_node = graphList[0]->initial_vertex->id;
+    vector<int> final_vertices_ids;
+    for (auto v : graphList[0]->final_vertices)
+    {
+        final_vertices_ids.push_back(v->id);
+    }
 
-//     Graph *newGraph = new Graph(number_of_vertices, number_of_edges, edges_with_labels, source_node, final_vertices_ids);
+    Graph *newGraph = new Graph(number_of_vertices, number_of_edges, edges_with_labels, source_node, final_vertices_ids);
 
-//     return newGraph;
-// }
+    return newGraph;
+}
 
 map<char, vector<vector<Node *>>> findCommonEdgeLabels(vector<vector<Node *>> current_nodes)
 {
@@ -221,11 +221,11 @@ map<char, vector<vector<Node *>>> findCommonEdgeLabels(vector<vector<Node *>> cu
     return label_to_next_nodes;
 }
 
-bool isFinalnode(const vector<Node*>& nodes, Graph* first_graph)
+bool isFinalnode(vector<Node*> nodes, Graph* g)
 {
     for (auto node : nodes)
     {
-        if (first_graph->is_final_vertex(node))
+        if (g->is_final_vertex(node))
         {
             return true;
         }
@@ -233,16 +233,32 @@ bool isFinalnode(const vector<Node*>& nodes, Graph* first_graph)
     return false;
 }
 
+vector<vector<int>> getNodeIds(vector<vector<Node *>> nodes)
+{
+    vector<vector<int>> ids;
+    for (auto node_group : nodes)
+    {
+        vector<int> group_ids;
+        for (auto node : node_group)
+        {
+            group_ids.push_back(node->id);
+        }
+        ids.push_back(group_ids);
+    }
+    return ids;
+}
 
 Graph *createIntersectionGraph(vector<Graph *> graph_list)
 {
 
-    bool destination_reached = false;
     Node *initial_node = new Node(1);
-    vector<Edge *> intersection_edges;
+    vector<Node*> final_vertices;
+    vector<Edge *> new_edges;
     vector<vector<Node *>> nodes_in_queue;
-    queue<vector<vector<Node *>>> q;
+    queue<pair<vector<vector<Node *>>, Node*>> q;
+    set<vector<vector<int>>> visited;
 
+    bool destination_reached = false;
 
     for (Graph *g : graph_list)
     {
@@ -250,18 +266,71 @@ Graph *createIntersectionGraph(vector<Graph *> graph_list)
         temp.push_back(g->initial_vertex);
         nodes_in_queue.push_back(temp);
     }
-    q.push(nodes_in_queue);
+    q.push(make_pair(nodes_in_queue, initial_node));
 
     int node_id_counter = 2;
 
     while (!q.empty())
     {
-        vector<vector<Node *>> current_nodes = q.front();
+        auto [current_nodes, current_intersection_node] = q.front();
 
         q.pop();
 
+        if (isFinalnode(current_nodes[0], graph_list[0]))
+        {
+            destination_reached = true;
+            final_vertices.push_back(current_intersection_node);
+        }
+
         map<char, vector<vector<Node *>>> common_labels = findCommonEdgeLabels(current_nodes);
-    
+
+        //cannot proceed && destination not reached
+        if (common_labels.empty() && destination_reached == false) 
+        {
+            return nullptr;
+        }
+        else
+        {
+            //for each label create a new node
+            if(common_labels.empty() == false)
+            {
+
+                for ( auto [label, next_nodes] : common_labels)
+                {
+                    vector<vector<int>> next_node_ids = getNodeIds(next_nodes);
+
+                    if (visited.count(next_node_ids))
+                    {
+                        continue; 
+                    }
+
+                    visited.insert(next_node_ids);
+
+
+
+                    Node* new_node = new Node(node_id_counter++);
+                    new_edges.push_back(new Edge(current_intersection_node, new_node, label));
+                    
+                    current_intersection_node->addNode(new_node);
+                    new_node->addNode(current_intersection_node);
+                    
+                    q.push({next_nodes, new_node});
+                }
+            }
+            else
+            {
+                //cannot proceed 
+                break;
+            }
+        }
     }
-    return nullptr;
+    if (new_edges.empty()) 
+    {
+        return nullptr;
+    }
+    else
+    {
+        // cout  << initial_node->id <<endl; 
+        return new Graph(initial_node,final_vertices,  new_edges);
+    }
 }
