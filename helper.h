@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <map>
 #include "Graph.h"
 
 // Solution for question 2
@@ -116,35 +116,152 @@ unordered_map<char, pair<int, int>> createCommonLabelMap(vector<Graph *> graphLi
     return label_to_nodes;
 }
 
-Graph *constructIntersectionGraph(vector<Graph *> graphList)
+// Graph *constructIntersectionGraph(vector<Graph *> graphList)
+// {
+//     unordered_map<char, pair<int, int>> label_to_nodes = createCommonLabelMap(graphList);
+//     set<int> unique_nodes;
+//     vector<tuple<int, int, char>> edges_with_labels;
+
+//     for (auto item : label_to_nodes)
+//     {
+//         char label = item.first;
+//         int node1 = item.second.first;
+//         int node2 = item.second.second;
+
+//         unique_nodes.insert(node1);
+//         unique_nodes.insert(node2);
+
+//         edges_with_labels.push_back({node1, node2, label});
+//     }
+
+//     int number_of_vertices = unique_nodes.size();
+//     int number_of_edges = edges_with_labels.size();
+
+//     int source_node = graphList[0]->initial_vertex->id;
+//     vector<int> final_vertices_ids;
+//     for (auto v : graphList[0]->final_vertices)
+//     {
+//         final_vertices_ids.push_back(v->id);
+//     }
+
+//     Graph *newGraph = new Graph(number_of_vertices, number_of_edges, edges_with_labels, source_node, final_vertices_ids);
+
+//     return newGraph;
+// }
+
+map<char, vector<vector<Node *>>> findCommonEdgeLabels(vector<vector<Node *>> current_nodes)
 {
-    unordered_map<char, pair<int, int>> label_to_nodes = createCommonLabelMap(graphList);
-    set<int> unique_nodes;
-    vector<tuple<int, int, char>> edges_with_labels;
+    set<char> running_common_labels;
+    map<char, vector<vector<Node *>>> label_to_next_nodes;
 
-    for (auto item : label_to_nodes)
+    for (auto node : current_nodes[0])
     {
-        char label = item.first;
-        int node1 = item.second.first;
-        int node2 = item.second.second;
-
-        unique_nodes.insert(node1);
-        unique_nodes.insert(node2);
-
-        edges_with_labels.push_back({node1, node2, label});
+        for (Edge *edge : node->connected_edges)
+        {
+            if (edge->n1 == node)
+            {
+                running_common_labels.insert(edge->lable);
+                label_to_next_nodes[edge->lable].push_back({edge->n2});
+            }
+        }
     }
 
-    int number_of_vertices = unique_nodes.size();
-    int number_of_edges = edges_with_labels.size();
-
-    int source_node = graphList[0]->initial_vertex->id;
-    vector<int> final_vertices_ids;
-    for (auto v : graphList[0]->final_vertices)
+    // Finding intersection of labels from each graph
+    for (int i = 1; i < current_nodes.size(); ++i)
     {
-        final_vertices_ids.push_back(v->id);
+        set<char> labels_in_current_graph;
+        map<char, vector<Node *>> next_nodes_in_current_graph;
+
+        for (auto node : current_nodes[i])
+        {
+            for (Edge *edge : node->connected_edges)
+            {
+                if (edge->n1 == node)
+                {
+                    labels_in_current_graph.insert(edge->lable);
+                    next_nodes_in_current_graph[edge->lable].push_back(edge->n2);
+                }
+            }
+        }
+        
+        //updating common lables
+        for (auto it = running_common_labels.begin(); it != running_common_labels.end(); )
+        {
+            char label = *it;
+            if (labels_in_current_graph.count(label))
+            {
+                label_to_next_nodes[label].push_back(next_nodes_in_current_graph[label]);
+                ++it;
+            }
+            else
+            {
+                label_to_next_nodes.erase(label);
+                it = running_common_labels.erase(it);
+            }
+        }
     }
 
-    Graph *newGraph = new Graph(number_of_vertices, number_of_edges, edges_with_labels, source_node, final_vertices_ids);
+    // for (auto [label, nodes_list] : label_to_next_nodes)
+    // {
+    //     cout << "Label: " << label << " -> Next Nodes: ";
+    //     for (auto nodes : nodes_list)
+    //     {
+    //         cout << "[";
+    //         for (auto node : nodes)
+    //         {
+    //             cout << node->id << " ";
+    //         }
+    //         cout << "] ";
+    //     }
+    //     cout << endl;
+    // }
 
-    return newGraph;
+
+
+    return label_to_next_nodes;
+}
+
+bool isFinalnode(const vector<Node*>& nodes, Graph* first_graph)
+{
+    for (auto node : nodes)
+    {
+        if (first_graph->is_final_vertex(node))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+Graph *createIntersectionGraph(vector<Graph *> graph_list)
+{
+
+    bool destination_reached = false;
+    Node *initial_node = new Node(1);
+    vector<Edge *> intersection_edges;
+    vector<vector<Node *>> nodes_in_queue;
+    queue<vector<vector<Node *>>> q;
+
+
+    for (Graph *g : graph_list)
+    {
+        vector<Node *> temp;
+        temp.push_back(g->initial_vertex);
+        nodes_in_queue.push_back(temp);
+    }
+    q.push(nodes_in_queue);
+
+    int node_id_counter = 2;
+
+    while (!q.empty())
+    {
+        vector<vector<Node *>> current_nodes = q.front();
+
+        q.pop();
+
+        map<char, vector<vector<Node *>>> common_labels = findCommonEdgeLabels(current_nodes);
+    
+    }
+    return nullptr;
 }

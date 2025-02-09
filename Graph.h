@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class Edges;
+class Edge;
 
 class Node{
     public:
@@ -18,20 +18,28 @@ class Node{
     }
     int id;
     vector<Node*> connected_nodes;
+    vector<Edge*> connected_edges;
+
     void addNode(Node* n)
     {
         connected_nodes.push_back(n);
     }
+
+    void addEdge(Edge* e)
+    {
+        connected_edges.push_back(e);
+    }
 };
 
 class Edge{
-    
     public:
-    
-    Edge(Node* n1, Node* n2)
+    Edge(Node* n1, Node* n2, char label)
     {
         this->n1 = n1;
         this->n2 = n2;
+        this->lable = label;
+        n1->addEdge(this);
+        n2->addEdge(this);
     }
 
     char lable;
@@ -91,15 +99,16 @@ class Graph{
                 n2 = new Node(n2_id);
                 addVertex(n2);
             }
+
+            char label; cin >> label;
             
-            Edge* e = new Edge(n1, n2);
+            Edge* e = new Edge(n1, n2, label);
             
             n1->addNode(n2);
             n2->addNode(n1);
 
             addedges(e);
-            char label; cin >> label;
-            setLabel(label, e);
+            // setLabel(label, e);
         }
 
         int initial_node; cin >> initial_node; 
@@ -160,8 +169,8 @@ class Graph{
                 addVertex(n2);
             }
 
-            Edge* e = new Edge(n1, n2);
-            setLabel(label, e);
+            Edge* e = new Edge(n1, n2, label);
+            // setLabel(label, e);
             addedges(e);
             n1->addNode(n2);
             n2->addNode(n1);
@@ -174,6 +183,36 @@ class Graph{
             addFinalVertices(id);   
         }
     }
+
+    Graph(Node *initial_node, vector<Edge *> edges)
+    {
+        initial_vertex = initial_node;
+        edgeList = edges;
+    
+        set<Node *> unique_nodes;
+        for (auto edge : edges)
+        {
+            unique_nodes.insert(edge->n1);
+            unique_nodes.insert(edge->n2);
+        }
+    
+        for (auto node : unique_nodes)
+        {
+            vertices.push_back(node);
+        }
+    
+        numberOfVertices = vertices.size();
+        numberOfEdges = edges.size();
+    
+        for (auto node : vertices)
+        {
+            if (is_final_vertex(node))
+            {
+                final_vertices.push_back(node);
+            }
+        }
+    }
+
 
     void setNumberofEdges(int e)
     {

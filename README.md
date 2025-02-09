@@ -44,48 +44,65 @@ This projects diretory structure is as follows
 
 **Structure of Test Cases in input1.txt:**
 ```
-2                  # to run question 2
+2                 # to run question 2
 
-2                  # Number of sets of test cases
+3                  # Number of test cases
 
-2                  # Number of test cases in the first set
+2                  # Number of graphs in 1st testcase
 
-5 5                # Test Case 1: Number of vertices and edges
+5 5                # Graph 1: Number of vertices and edges
 1 2 a              # Edge from vertex 1 to 2 labeled 'a'
 2 3 b              # Edge from vertex 2 to 3 labeled 'b'
 1 3 c              # Edge from vertex 1 to 3 labeled 'c'
 3 4 d              # Edge from vertex 3 to 4 labeled 'd'
 3 5 e              # Edge from vertex 3 to 5 labeled 'e'
-1                  # Starting node
-2                  # Target node
-4 5                # Query nodes
+1                  # Initial node
+2                  # Number of Final nodes
+4 5                # Final nodes
 
-4 4                # Test Case 2: Number of vertices and edges
+4 4                # Graph 2: Number of vertices and edges
 1 2 a              # Edge from vertex 1 to 2 labeled 'a'
 2 3 b              # Edge from vertex 2 to 3 labeled 'b'
 3 4 d              # Edge from vertex 3 to 4 labeled 'd'
 1 4 f              # Edge from vertex 1 to 4 labeled 'f'
-1                  # Starting node
-1                  # Target node
-4                  # Query node
+1                  # Initial node
+1                  # Number of Final nodes
+4                  # Final nodes
 
-2                  # Number of test cases in the second set
+2                  # Number of Graphs cases in the second testcase
 
-3 3                # Test Case 3: Number of vertices and edges
+3 3                #  Graph 1: Number of vertices and edges
 1 2 x              # Edge from vertex 1 to 2 labeled 'x'
 2 3 y              # Edge from vertex 2 to 3 labeled 'y'
 1 3 z              # Edge from vertex 1 to 3 labeled 'z'
-1                  # Starting node
-1                  # Target node
-3                  # Query node
+1                  # Initial node
+1                  # Number of Final nodes
+3                  # Final node
 
-3 3                # Test Case 4: Number of vertices and edges
+3 3                # Graph 2: Number of vertices and edges
 1 2 x              # Edge from vertex 1 to 2 labeled 'x'
 2 3 y              # Edge from vertex 2 to 3 labeled 'y'
 2 1 w              # Edge from vertex 2 to 1 labeled 'w'
-1                  # Starting node
-1                  # Target node
-3                  # Query node
+1                  # Initial node
+1                  # Number of Final nodes
+3                  # Final node
+
+2                  # Number of Graphs in the third testcase
+
+3 2                # Graph 1: Number of vertices and edges
+1 2 l1             # Edge from vertex 1 to 2 labeled 'l1'
+2 3 l2             # Edge from vertex 2 to 3 labeled 'l2'
+1                  # Initial node
+1                  # Number of Final nodes
+3                  # Final node
+
+3 2                # Graph 2: Number of vertices and edges
+1 2 l2             # Edge from vertex 1 to 2 labeled 'l2'
+2 3 l1             # Edge from vertex 2 to 3 labeled 'l1'
+1                  # Initial Node
+1                  # Number of Final node
+3                  # Final node
+
 ```
 
 - **Explanation:**
